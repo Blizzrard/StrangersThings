@@ -1,11 +1,16 @@
 import { useState } from "react";
+import { useOutletContext } from "react-router-dom";
 
 const COHORT_NAME = "2301-FTB-MT-WEB-PT";
 const BASE_URL = `https://strangers-things.herokuapp.com/api/${COHORT_NAME}`;
 
 export default function Login() {
-  const [usernameEntry, setUsernameEntry] = useState("");
-  const [passwordEntry, setPasswordEntry] = useState("");
+  const {
+    usernameEntry: [usernameEntry, setUsernameEntry],
+    authToken: [authToken, setAuthToken],
+    passwordEntry: [passwordEntry, setPasswordEntry],
+    myData,
+  } = useOutletContext();
   return (
     <form
       onSubmit={async (event) => {
@@ -24,7 +29,7 @@ export default function Login() {
             }),
           });
           const result = await response.json();
-          console.log(result.data.token);
+          setAuthToken(result.data.token);
           return result;
         } catch (error) {}
       }}

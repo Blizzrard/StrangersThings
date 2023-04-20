@@ -8,6 +8,7 @@ import Posts from "./components/posts";
 import Profile from "./components/profile";
 import Login from "./components/login";
 import Register from "./components/register";
+import SinglePost from "./components/singlepost";
 
 const router = createBrowserRouter([
   {
@@ -19,6 +20,7 @@ const router = createBrowserRouter([
       { path: "/profile", element: <Profile /> },
       { path: "/login", element: <Login /> },
       { path: "/register", element: <Register /> },
+      { path: "/posts/:postId", element: <SinglePost /> },
     ],
   },
 ]);
