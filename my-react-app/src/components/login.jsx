@@ -10,6 +10,7 @@ export default function Login() {
     authToken: [authToken, setAuthToken],
     passwordEntry: [passwordEntry, setPasswordEntry],
     myData,
+    userProfile: [userProfile, setUserProfile],
   } = useOutletContext();
   return (
     <form
@@ -30,7 +31,8 @@ export default function Login() {
           });
           const result = await response.json();
           setAuthToken(result.data.token);
-          localStorage.setItem("token", (result.data.token));
+          localStorage.setItem("token", result.data.token);
+          setUserProfile(myData);
           return result;
         } catch (error) {}
       }}
