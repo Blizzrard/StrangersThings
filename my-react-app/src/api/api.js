@@ -22,6 +22,9 @@ export const myData = async (token) => {
 };
 
 export const makePost = async (title, description, price, token) => {
+  if (localStorage.getItem("token")) {
+    return JSON.parse(localStorage.getItem("token"));
+  }
   try {
     const response = await fetch(`${BASE_URL}/posts`, {
       method: "POST",

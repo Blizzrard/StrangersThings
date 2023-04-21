@@ -19,7 +19,8 @@ export default function Posts() {
     } catch (error) {}
   }, []);
   const authorizedUserPostPage = () => {
-    if (authToken !== "") {
+    console.log(authToken);
+    if (authToken !== null && authToken !== "") {
       return (
         <form
           onSubmit={async (e) => {

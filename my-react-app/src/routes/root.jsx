@@ -1,13 +1,22 @@
 import { Outlet, useOutletContext } from "react-router-dom";
 import Navbar from "../components/navbar";
 import { fetchAllPosts, myData } from "../api/api";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Root() {
   const [posts, setPosts] = useState([]);
   const [usernameEntry, setUsernameEntry] = useState("");
   const [authToken, setAuthToken] = useState("");
   const [passwordEntry, setPasswordEntry] = useState("");
+  useEffect(() => {
+    try {
+      setAuthToken(localStorage.getItem("token"));
+      console.log(authToken);
+    } catch (error) {
+    } finally {
+      myData(authToken);
+    }
+  }, []);
   return (
     <div>
       <Navbar />

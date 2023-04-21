@@ -7,13 +7,16 @@ export default function Profile() {
   const [userProfile, setUserProfile] = useState({});
   useEffect(() => {
     try {
-
       Promise.all([myData(authToken[0])]).then((values) => {
         setUserProfile(values[0]);
       });
     } catch (error) {}
   }, []);
-  if (authToken[0] !== "" && userProfile.data !== undefined) {
+  if (
+    authToken[0] !== "" &&
+    userProfile.data !== undefined &&
+    userProfile.data !== null
+  ) {
     return (
       <div>
         <h1>Username: {userProfile.data.username}</h1>
@@ -22,6 +25,11 @@ export default function Profile() {
       </div>
     );
   } else {
-    return <></>;
+    console.log(userProfile);
+    return (
+      <>
+        <div>am broken </div>
+      </>
+    );
   }
 }

@@ -30,6 +30,7 @@ export default function Login() {
           });
           const result = await response.json();
           setAuthToken(result.data.token);
+          localStorage.setItem("token", (result.data.token));
           return result;
         } catch (error) {}
       }}
@@ -50,7 +51,7 @@ export default function Login() {
         <label htmlFor="password">Password:</label>
         <input
           id="passwordEntry"
-          type="text"
+          type="password"
           placeholder="Password..."
           value={passwordEntry}
           onChange={(e) => setPasswordEntry(e.target.value)}
