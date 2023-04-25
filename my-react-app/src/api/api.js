@@ -15,7 +15,8 @@ export const myData = async (token) => {
       },
     });
     const result = await response.json();
-    return result;
+    console.log(result);
+    return result.data;
   } catch (err) {
     console.error(err);
   }

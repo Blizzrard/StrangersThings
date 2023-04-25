@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
 const COHORT_NAME = "2301-FTB-MT-WEB-PT";
 const BASE_URL = `https://strangers-things.herokuapp.com/api/${COHORT_NAME}`;
 
 export default function Login() {
+  const navigate = useNavigate();
   const {
     usernameEntry: [usernameEntry, setUsernameEntry],
     authToken: [authToken, setAuthToken],
@@ -32,7 +33,11 @@ export default function Login() {
           const result = await response.json();
           setAuthToken(result.data.token);
           localStorage.setItem("token", result.data.token);
+          localStorage.setItem("isLoggedIn", true);
           setUserProfile(myData);
+          setUsernameEntry("");
+          setPasswordEntry("");
+          navigate("/");
           return result;
         } catch (error) {}
       }}

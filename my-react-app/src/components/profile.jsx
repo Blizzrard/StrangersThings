@@ -3,32 +3,35 @@ import { useOutletContext } from "react-router-dom";
 import { myData } from "../api/api";
 
 export default function Profile() {
-  const { authToken } = useOutletContext();
-  const [userProfile, setUserProfile] = useState({});
+  const {
+    authToken: [authToken, setAuthToken],
+    userProfile: [userProfile, setUserProfile],
+  } = useOutletContext();
   useEffect(() => {
     try {
-      Promise.all([myData(authToken[0])]).then((values) => {
+      Promise.all([
+        myData(localStorage.getItem("token")),
+      ]).then((values) => {
         setUserProfile(values[0]);
+        setAuthToken(localStorage.getItem("token"));
       });
     } catch (error) {}
   }, []);
   if (
-    authToken[0] !== "" &&
-    userProfile.data !== undefined &&
-    userProfile.data !== null
+    authToken !== "" &&
+    userProfile 
   ) {
     return (
       <div>
-        <h1>Username: {userProfile.data.username}</h1>
-        <h1>Messages: {userProfile.data.messages.length}</h1>
-        <h1>Posts: {userProfile.data.posts.length}</h1>
+        <h1>Username: {userProfile.username}</h1>
+        <h1>Messages: {userProfile.messages.length}</h1>
+        <h1>Posts: {userProfile.posts.length}</h1>
       </div>
     );
   } else {
-    console.log(userProfile);
     return (
       <>
-        <div>am broken </div>
+        <div>Loading... </div>
       </>
     );
   }

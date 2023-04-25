@@ -9,6 +9,7 @@ import Profile from "./components/profile";
 import Login from "./components/login";
 import Register from "./components/register";
 import SinglePost from "./components/singlepost";
+import Logout from "./components/logout";
 
 const router = createBrowserRouter([
   {
@@ -19,6 +20,7 @@ const router = createBrowserRouter([
       { path: "/posts", element: <Posts /> },
       { path: "/profile", element: <Profile /> },
       { path: "/login", element: <Login /> },
+      { path: "/logout", element: <Logout /> },
       { path: "/register", element: <Register /> },
       { path: "/posts/:postId", element: <SinglePost /> },
     ],

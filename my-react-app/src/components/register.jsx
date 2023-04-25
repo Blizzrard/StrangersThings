@@ -24,7 +24,6 @@ export default function Register() {
             }),
           });
           const result = await response.json();
-          console.log(result);
           return result;
         } catch (error) {}
       }}

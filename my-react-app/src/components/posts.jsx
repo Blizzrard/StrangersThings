@@ -10,16 +10,18 @@ export default function Posts() {
     fetchAllPosts,
     posts: [posts, setPosts],
     authToken: [authToken, setAuthToken],
+    userProfile: [userProfile, setUserProfile],
+    myData,
   } = useOutletContext();
   useEffect(() => {
     try {
-      Promise.all([fetchAllPosts()]).then((values) => {
+      Promise.all([fetchAllPosts(), myData(authToken)]).then((values) => {
         setPosts(values[0]);
+        setUserProfile(values[1]);
       });
     } catch (error) {}
   }, []);
   const authorizedUserPostPage = () => {
-    console.log(authToken);
     if (authToken !== null && authToken !== "") {
       return (
         <form
@@ -30,7 +32,7 @@ export default function Posts() {
                 newPostTitle,
                 newPostBody,
                 newPriceBody,
-                authToken[0]
+                authToken
               );
               setNewPriceBody("");
               setNewPostTitle("");
@@ -64,23 +66,34 @@ export default function Posts() {
       );
     }
   };
-  return (
-    <div>
-      {authorizedUserPostPage()}
-      {posts.map((post) => {
-        return (
-          <React.Fragment key={post._id}>
-            <Link to={`/posts/${post._id}`}>
-              <h1>{post.title}</h1>
-            </Link>
-            <div>{post.description}</div>
-            <div>
-              <button className="editBtn">Edit</button>
-              <button className="delBtn">Delete</button>
-            </div>{" "}
-          </React.Fragment>
-        );
-      })}
-    </div>
-  );
+  const userOwnPost = (postId) => {
+    if (userProfile._id === postId) {
+      return (
+        <div>
+          <button className="editBtn">Edit</button>
+          <button className="delBtn">Delete</button>
+        </div>
+      );
+    }
+  };
+  console.log(authToken, userProfile, posts);
+  if (authToken !== "" && userProfile) {
+    return (
+      <div>
+        {authorizedUserPostPage()}
+        {posts.map((post) => {
+          return (
+            <React.Fragment key={post._id}>
+              <Link to={`/posts/${post._id}`}>
+                <h1>{post.title}</h1>
+              </Link>
+              <div>{post.description}</div> {userOwnPost(post.author._id)}
+            </React.Fragment>
+          );
+        })}
+      </div>
+    );
+  } else {
+    return <div>Loading...</div>;
+  }
 }
