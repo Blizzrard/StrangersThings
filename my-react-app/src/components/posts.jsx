@@ -1,6 +1,6 @@
 import React, { useEffect, useState, Fragment } from "react";
 import { Link, useOutletContext } from "react-router-dom";
-import { makePost } from "../api/api";
+import { deletePost, makePost, postMessage } from "../api/api";
 
 export default function Posts() {
   const [newPostTitle, setNewPostTitle] = useState("");
@@ -15,18 +15,22 @@ export default function Posts() {
   } = useOutletContext();
   useEffect(() => {
     try {
-      Promise.all([fetchAllPosts(), myData(authToken)]).then((values) => {
+      Promise.all([
+        fetchAllPosts(authToken),
+        myData(localStorage.getItem("token")),
+      ]).then((values) => {
         setPosts(values[0]);
         setUserProfile(values[1]);
       });
     } catch (error) {}
   }, []);
-  const authorizedUserPostPage = () => {
+  const AuthorizedUserPostPage = () => {
     if (authToken !== null && authToken !== "") {
       return (
         <form
           onSubmit={async (e) => {
             e.preventDefault();
+            console.log("HELLO?");
             try {
               const result = await makePost(
                 newPostTitle,
@@ -37,6 +41,7 @@ export default function Posts() {
               setNewPriceBody("");
               setNewPostTitle("");
               setNewPostBody("");
+              return result;
             } catch (error) {}
           }}
         >
@@ -66,28 +71,52 @@ export default function Posts() {
       );
     }
   };
-  const userOwnPost = (postId) => {
-    if (userProfile._id === postId) {
+  const UserOwnPost = (authorId, postId) => {
+    const [messageText, setMessageText] = useState("");
+    if (userProfile._id === authorId) {
       return (
         <div>
           <button className="editBtn">Edit</button>
-          <button className="delBtn">Delete</button>
+          <button
+            onClick={() => deletePost(localStorage.getItem("token"), postId)}
+            className="delBtn"
+          >
+            Delete
+          </button>
         </div>
+      );
+    } else {
+      return (
+        <form
+          id={`${postId}_btn`}
+          onSubmit={(e) => {
+            e.preventDefault();
+            postMessage(authToken, postId, messageText);
+          }}
+        >
+          <input
+            value={messageText}
+            type="textarea"
+            onChange={(e) => setMessageText(e.target.value)}
+          />
+          <button>Message</button>
+        </form>
       );
     }
   };
   console.log(authToken, userProfile, posts);
-  if (authToken !== "" && userProfile) {
+  if (authToken !== "" && userProfile && posts) {
     return (
       <div>
-        {authorizedUserPostPage()}
+        {AuthorizedUserPostPage()}
         {posts.map((post) => {
           return (
             <React.Fragment key={post._id}>
-              <Link to={`/posts/${post._id}`}>
+              <Link to={`/posts/${post._id}`} id={post._id}>
                 <h1>{post.title}</h1>
               </Link>
-              <div>{post.description}</div> {userOwnPost(post.author._id)}
+              <div>{post.description}</div>{" "}
+              {UserOwnPost(post.author._id, post._id)}
             </React.Fragment>
           );
         })}

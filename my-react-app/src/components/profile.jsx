@@ -9,17 +9,18 @@ export default function Profile() {
   } = useOutletContext();
   useEffect(() => {
     try {
-      Promise.all([
-        myData(localStorage.getItem("token")),
-      ]).then((values) => {
+      Promise.all([myData(localStorage.getItem("token"))]).then((values) => {
         setUserProfile(values[0]);
         setAuthToken(localStorage.getItem("token"));
+        console.log(values, values[0].messages.length);
       });
     } catch (error) {}
   }, []);
   if (
     authToken !== "" &&
-    userProfile 
+    userProfile &&
+    userProfile.messages &&
+    userProfile.posts
   ) {
     return (
       <div>
