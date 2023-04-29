@@ -1,11 +1,11 @@
-import React, { useEffect, useState, Fragment } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 import { deletePost, makePost, postMessage } from "../api/api";
+import { AuthorizedUserPostPage } from "./authorizeduserpostpage";
+import { UserOwnPost } from "./userownpost";
+import Editbox from "./editbox";
 
 export default function Posts() {
-  const [newPostTitle, setNewPostTitle] = useState("");
-  const [newPostBody, setNewPostBody] = useState("");
-  const [newPriceBody, setNewPriceBody] = useState("");
   const {
     fetchAllPosts,
     posts: [posts, setPosts],
@@ -13,116 +13,83 @@ export default function Posts() {
     userProfile: [userProfile, setUserProfile],
     myData,
   } = useOutletContext();
+  setAuthToken(localStorage.getItem("token"));
   useEffect(() => {
     try {
-      Promise.all([
-        fetchAllPosts(authToken),
-        myData(localStorage.getItem("token")),
-      ]).then((values) => {
-        setPosts(values[0]);
-        setUserProfile(values[1]);
-      });
+      Promise.all([fetchAllPosts(authToken), myData(authToken)]).then(
+        (values) => {
+          setPosts(values[0]);
+          setUserProfile(values[1]);
+        }
+      );
     } catch (error) {}
-  }, []);
-  const AuthorizedUserPostPage = () => {
-    if (authToken !== null && authToken !== "") {
-      return (
-        <form
-          onSubmit={async (e) => {
-            e.preventDefault();
-            console.log("HELLO?");
-            try {
-              const result = await makePost(
-                newPostTitle,
-                newPostBody,
-                newPriceBody,
-                authToken
-              );
-              setNewPriceBody("");
-              setNewPostTitle("");
-              setNewPostBody("");
-              return result;
-            } catch (error) {}
-          }}
-        >
-          <label htmlFor="newPostTitleEntry">Title: </label>
-          <input
-            id="newPostTitleEntry"
-            type="textarea"
-            value={newPostTitle}
-            onChange={(e) => setNewPostTitle(e.target.value)}
-          />
-          <label htmlFor="newBodyTitleEntry">Description: </label>
-          <input
-            id="newBodyTitleEntry"
-            type="textarea"
-            value={newPostBody}
-            onChange={(e) => setNewPostBody(e.target.value)}
-          />
-          <label htmlFor="newPriceTitleEntry">Price: </label>
-          <input
-            id="newPriceTitleEntry"
-            type="textarea"
-            value={newPriceBody}
-            onChange={(e) => setNewPriceBody(e.target.value)}
-          />
-          <button className="postSubmitBtn">Submit</button>
-        </form>
-      );
-    }
-  };
-  const UserOwnPost = (authorId, postId) => {
-    const [messageText, setMessageText] = useState("");
-    if (userProfile._id === authorId) {
-      return (
-        <div>
-          <button className="editBtn">Edit</button>
-          <button
-            onClick={() => deletePost(localStorage.getItem("token"), postId)}
-            className="delBtn"
-          >
-            Delete
-          </button>
-        </div>
-      );
-    } else {
-      return (
-        <form
-          id={`${postId}_btn`}
-          onSubmit={(e) => {
-            e.preventDefault();
-            postMessage(authToken, postId, messageText);
-          }}
-        >
-          <input
-            value={messageText}
-            type="textarea"
-            onChange={(e) => setMessageText(e.target.value)}
-          />
-          <button>Message</button>
-        </form>
-      );
-    }
-  };
-  console.log(authToken, userProfile, posts);
+  }, [authToken]);
+  const [postToEdit, setPostToEdit] = useState("");
+  console.log(postToEdit);
   if (authToken !== "" && userProfile && posts) {
     return (
+      <div className="postBody">
+        <AuthorizedUserPostPage
+          authToken={authToken}
+          makePost={makePost}
+          posts={posts}
+          setPosts={setPosts}
+        />
+        <Editbox
+          authToken={authToken}
+          posts={posts}
+          setPosts={setPosts}
+          postToEdit={postToEdit}
+          setPostToEdit={setPostToEdit}
+        />
+        <div className="posts">
+          {posts.map((post) => {
+            return (
+              <React.Fragment key={post._id}>
+                <Link to={`/posts/${post._id}`} id={post._id} state={{ post }}>
+                  <h1>{post.title}</h1>
+                  <div>{post.description}</div>
+                </Link>{" "}
+                <UserOwnPost
+                  authorId={post.author._id}
+                  postId={post._id}
+                  userProfile={userProfile}
+                  deletePost={deletePost}
+                  authToken={authToken}
+                  setPosts={setPosts}
+                  postMessage={postMessage}
+                  postToEdit={postToEdit}
+                  setPostToEdit={setPostToEdit}
+                />
+              </React.Fragment>
+            );
+          })}
+        </div>
+      </div>
+    );
+  } else if (authToken === null && posts) {
+    return (
       <div>
-        {AuthorizedUserPostPage()}
+        <AuthorizedUserPostPage
+          authToken={authToken}
+          makePost={makePost}
+          posts={posts}
+          setPosts={setPosts}
+        />
         {posts.map((post) => {
           return (
             <React.Fragment key={post._id}>
-              <Link to={`/posts/${post._id}`} id={post._id}>
+              <Link to={`/posts/${post._id}`} id={post._id} state={{ post }}>
                 <h1>{post.title}</h1>
               </Link>
               <div>{post.description}</div>{" "}
-              {UserOwnPost(post.author._id, post._id)}
             </React.Fragment>
           );
         })}
       </div>
     );
   } else {
+    console.log("is loading nice");
     return <div>Loading...</div>;
   }
 }

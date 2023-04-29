@@ -17,14 +17,14 @@ export default function Root() {
     } catch (error) {}
   }, []);
   return (
-    <div>
+    <div className="main">
       <Navbar
         context={{
           authToken: [authToken, setAuthToken],
           userProfile: [userProfile, setUserProfile],
         }}
       />
-      <Outlet
+      <Outlet  
         context={{
           fetchAllPosts: fetchAllPosts,
           myData: myData,

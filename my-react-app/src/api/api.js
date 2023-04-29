@@ -27,7 +27,13 @@ export const myData = async (token) => {
   }
 };
 
-export const makePost = async (title, description, price, token) => {
+export const makePost = async (
+  title,
+  description,
+  price,
+  deliveryMethod,
+  token
+) => {
   try {
     const response = await fetch(`${BASE_URL}/posts`, {
       method: "POST",
@@ -40,6 +46,7 @@ export const makePost = async (title, description, price, token) => {
           title: title,
           description: description,
           price: price,
+          willDeliver: deliveryMethod,
         },
       }),
     });
@@ -79,6 +86,40 @@ export const postMessage = async (token, post_id, message) => {
       body: JSON.stringify({
         message: {
           content: message,
+        },
+      }),
+    });
+    const result = await response.json();
+    console.log(result);
+    return result;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const updatePost = async (
+  token,
+  post_id,
+  title,
+  description,
+  price,
+  location,
+  willDeliver
+) => {
+  try {
+    const response = await fetch(`${BASE_URL}/posts/${post_id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        post: {
+          title: title,
+          description: description,
+          price: price,
+          location: location,
+          willDeliver: willDeliver,
         },
       }),
     });
