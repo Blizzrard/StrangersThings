@@ -5,17 +5,16 @@ import { postMessage } from "../api/api";
 export default function SinglePost() {
   const location = useLocation();
   const [messageText, setMessageText] = useState("");
-  console.log(location, messageText);
   const authToken = localStorage.getItem("token");
   const { post } = location.state;
-  // console.log(post);
-  if (post)
+  let messages = post.messages;
+  if (post && post.isAuthor === false) {
     return (
       <div className="posts">
         <h1>{post.title}</h1>
         <span>Price: {post.price}</span>
         <span>Description: {post.description}</span>
-        <span>Will Deliver: {post.willDeliver}</span>
+        <span>Will Deliver: {post.willDeliver.toString()}</span>
         <span>Location: {post.location}</span>
         <span>Owner: {post.author.username}</span>
         <form
@@ -35,7 +34,27 @@ export default function SinglePost() {
         </form>
       </div>
     );
-  else if (!post) {
+  } else if (post && post.isAuthor === true) {
+    return (
+      <div className="posts">
+        <h1>{post.title}</h1>
+        <span>Price: {post.price}</span>
+        <span>Description: {post.description}</span>
+        <span>Will Deliver: {post.willDeliver.toString()}</span>
+        <span>Location: {post.location}</span>
+        <div className="messages">
+          {messages.map((message) => {
+            return (
+              <div className="singleMessage">
+                <h1>From: {message.fromUser.username}</h1>
+                <p>Message: {message.content}</p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  } else if (!post) {
     return <div>Loading</div>;
   }
 }

@@ -12,10 +12,10 @@ export default function Profile() {
       Promise.all([myData(localStorage.getItem("token"))]).then((values) => {
         setUserProfile(values[0]);
         setAuthToken(localStorage.getItem("token"));
-        console.log(values, values[0].messages.length);
       });
     } catch (error) {}
   }, []);
+  let messages = userProfile.messages;
   if (
     authToken !== "" &&
     userProfile &&
@@ -25,8 +25,20 @@ export default function Profile() {
     return (
       <div>
         <h1>Username: {userProfile.username}</h1>
-        <h1>Messages: {userProfile.messages.length}</h1>
         <h1>Posts: {userProfile.posts.length}</h1>
+        <h1>
+          Messages: {userProfile.messages.length}
+          <div className="messages">
+            {messages.map((message) => {
+              return (
+                <div className="singleMessage">
+                  <h1>From: {message.fromUser.username}</h1>
+                  <p>Message: {message.content}</p>
+                </div>
+              );
+            })}
+          </div>
+        </h1>
       </div>
     );
   } else {

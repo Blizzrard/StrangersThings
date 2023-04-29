@@ -88,3 +88,8 @@ body {
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
 }
+.singleMessage {
+  border: 2px solid black;
+  margin: 10px;
+  padding: 5px;
+}

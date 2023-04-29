@@ -136,13 +136,6 @@ export const AuthorizedUserPostPage = (props) => {
             setPosts(postsToDisplay);
             setSearchTerm("");
             setHasSearched(true);
-            console.log(
-              postsToDisplay,
-              posts,
-              searchTerm,
-              authToken,
-              fetchAllPosts(authToken)
-            );
           }
         }}
       >

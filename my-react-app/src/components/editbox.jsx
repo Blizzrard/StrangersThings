@@ -1,15 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { updatePost, fetchAllPosts } from "../api/api";
 
 export default function EditBox(props) {
   const [newPostTitle, setNewPostTitle] = useState("");
   const [newPostBody, setNewPostBody] = useState("");
   const [newPriceBody, setNewPriceBody] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [hasSearched, setHasSearched] = useState(false);
   const [willDeliver, setWillDeliver] = useState(false);
   const [location, setLocation] = useState("");
+  const [oldData, setOldData] = useState({});
   const { authToken, posts, setPosts, postToEdit, setPostToEdit } = props;
+  let postData = posts.filter((post) => post._id === postToEdit);
+  useEffect(() => {
+    try {
+      Promise.all([posts.filter((post) => post._id === postToEdit)]).then(
+        (value) => {
+          setOldData(value[0][0]);
+        }
+      );
+    } catch (error) {}
+  }, []);
   return (
     <div className="editBox" id="editingBox">
       {" "}
@@ -32,9 +41,10 @@ export default function EditBox(props) {
             setNewPostBody("");
             setWillDeliver(false);
             setLocation("");
+            setPostToEdit("");
             let editBox = document.getElementById("editingBox");
             editBox.style.display = "none";
-            let newArr = await fetchAllPosts(authToken)
+            let newArr = await fetchAllPosts(authToken);
             return setPosts(newArr);
           } catch (error) {}
         }}
@@ -42,7 +52,8 @@ export default function EditBox(props) {
         <label htmlFor="newPostTitleEntry">Title: </label>
         <input
           id="newPostTitleEntry"
-          type="textarea"
+          type="text"
+          
           value={newPostTitle}
           onChange={(e) => setNewPostTitle(e.target.value)}
         />

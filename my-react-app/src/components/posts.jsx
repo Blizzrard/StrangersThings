@@ -25,7 +25,6 @@ export default function Posts() {
     } catch (error) {}
   }, [authToken]);
   const [postToEdit, setPostToEdit] = useState("");
-  console.log(postToEdit);
   if (authToken !== "" && userProfile && posts) {
     return (
       <div className="postBody">
@@ -89,7 +88,6 @@ export default function Posts() {
       </div>
     );
   } else {
-    console.log("is loading nice");
     return <div>Loading...</div>;
   }
 }
