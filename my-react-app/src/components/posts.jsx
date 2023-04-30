@@ -68,23 +68,25 @@ export default function Posts() {
     );
   } else if (authToken === null && posts) {
     return (
-      <div>
+      <div className="postBody">
         <AuthorizedUserPostPage
           authToken={authToken}
           makePost={makePost}
           posts={posts}
           setPosts={setPosts}
         />
-        {posts.map((post) => {
-          return (
-            <React.Fragment key={post._id}>
-              <Link to={`/posts/${post._id}`} id={post._id} state={{ post }}>
-                <h1>{post.title}</h1>
-              </Link>
-              <div>{post.description}</div>{" "}
-            </React.Fragment>
-          );
-        })}
+        <div className="posts">
+          {posts.map((post) => {
+            return (
+              <React.Fragment key={post._id}>
+                <Link to={`/posts/${post._id}`} id={post._id} state={{ post }}>
+                  <h1>{post.title}</h1>
+                </Link>
+                <div>{post.description}</div>{" "}
+              </React.Fragment>
+            );
+          })}
+        </div>
       </div>
     );
   } else {

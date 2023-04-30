@@ -15,13 +15,15 @@ export default function Profile() {
       });
     } catch (error) {}
   }, []);
-  let messages = userProfile.messages;
+
   if (
     authToken !== "" &&
     userProfile &&
     userProfile.messages &&
-    userProfile.posts
+    userProfile.posts &&
+    userProfile !== null
   ) {
+    let messages = userProfile.messages;
     return (
       <div>
         <h1>Username: {userProfile.username}</h1>
@@ -41,6 +43,8 @@ export default function Profile() {
         </h1>
       </div>
     );
+  } else if (userProfile === null) {
+    return <div>You do not have a profile, please register</div>;
   } else {
     return (
       <>

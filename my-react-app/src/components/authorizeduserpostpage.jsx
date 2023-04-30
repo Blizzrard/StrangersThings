@@ -12,7 +12,8 @@ export const AuthorizedUserPostPage = (props) => {
   const [hasSearched, setHasSearched] = useState(false);
   const [willDeliver, setWillDeliver] = useState(false);
   const postSearching = (post, text) => {
-    return post.title.includes(text);
+    console.log(post.title.toLowerCase(), "HELOOOOOO");
+    return post.title.toLowerCase().includes(text.toLowerCase());
   };
   if (authToken !== null && authToken !== "") {
     return (

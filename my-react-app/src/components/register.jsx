@@ -44,7 +44,7 @@ export default function Register() {
         <label htmlFor="password">Password:</label>
         <input
           id="passwordEntry"
-          type="text"
+          type="password"
           placeholder="Password..."
           value={passwordEntry}
           onChange={(e) => setPasswordEntry(e.target.value)}
