@@ -81,8 +81,8 @@ export default function Posts() {
               <React.Fragment key={post._id}>
                 <Link to={`/posts/${post._id}`} id={post._id} state={{ post }}>
                   <h1>{post.title}</h1>
-                </Link>
-                <div>{post.description}</div>{" "}
+                  <div>{post.description}</div>
+                </Link>{" "}
               </React.Fragment>
             );
           })}

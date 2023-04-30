@@ -8,7 +8,8 @@ export default function SinglePost() {
   const authToken = localStorage.getItem("token");
   const { post } = location.state;
   let messages = post.messages;
-  if (post && post.isAuthor === false) {
+  console.log(authToken);
+  if (post && post.isAuthor === false && authToken) {
     return (
       <div className="posts">
         <h1>{post.title}</h1>
@@ -32,6 +33,17 @@ export default function SinglePost() {
           />
           <button>Message</button>
         </form>
+      </div>
+    );
+  } else if (post) {
+    return (
+      <div className="posts">
+        <h1>{post.title}</h1>
+        <span>Price: {post.price}</span>
+        <span>Description: {post.description}</span>
+        <span>Will Deliver: {post.willDeliver.toString()}</span>
+        <span>Location: {post.location}</span>
+        <span>Owner: {post.author.username}</span>
       </div>
     );
   } else if (post && post.isAuthor === true) {
